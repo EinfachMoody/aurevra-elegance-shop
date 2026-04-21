@@ -18,6 +18,10 @@ type ShopState = {
   cartCount: number;
   cartTotal: number;
   cartDetailed: (CartItem & { product: Product })[];
+  drawerOpen: boolean;
+  lastAdded: string | null;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 };
 
 const ShopContext = createContext<ShopState | null>(null);
