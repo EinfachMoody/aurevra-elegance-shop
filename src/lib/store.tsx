@@ -1,0 +1,98 @@
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { products, type Product } from "./products";
+
+export type CartItem = {
+  productId: string;
+  size: string;
+  qty: number;
+};
+
+type ShopState = {
+  cart: CartItem[];
+  wishlist: string[];
+  addToCart: (productId: string, size: string, qty?: number) => void;
+  removeFromCart: (productId: string, size: string) => void;
+  updateQty: (productId: string, size: string, qty: number) => void;
+  clearCart: () => void;
+  toggleWishlist: (productId: string) => void;
+  cartCount: number;
+  cartTotal: number;
+  cartDetailed: (CartItem & { product: Product })[];
+};
+
+const ShopContext = createContext<ShopState | null>(null);
+
+export function ShopProvider({ children }: { children: ReactNode }) {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    try {
+      const c = localStorage.getItem("aurevra:cart");
+      const w = localStorage.getItem("aurevra:wishlist");
+      if (c) setCart(JSON.parse(c));
+      if (w) setWishlist(JSON.parse(w));
+    } catch {}
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated) localStorage.setItem("aurevra:cart", JSON.stringify(cart));
+  }, [cart, hydrated]);
+  useEffect(() => {
+    if (hydrated) localStorage.setItem("aurevra:wishlist", JSON.stringify(wishlist));
+  }, [wishlist, hydrated]);
+
+  const value = useMemo<ShopState>(() => {
+    const cartDetailed = cart
+      .map((c) => {
+        const product = products.find((p) => p.id === c.productId);
+        return product ? { ...c, product } : null;
+      })
+      .filter(Boolean) as (CartItem & { product: Product })[];
+
+    return {
+      cart,
+      wishlist,
+      cartDetailed,
+      cartCount: cart.reduce((s, i) => s + i.qty, 0),
+      cartTotal: cartDetailed.reduce((s, i) => s + i.product.price * i.qty, 0),
+      addToCart: (productId, size, qty = 1) => {
+        setCart((prev) => {
+          const idx = prev.findIndex((p) => p.productId === productId && p.size === size);
+          if (idx >= 0) {
+            const next = [...prev];
+            next[idx] = { ...next[idx], qty: next[idx].qty + qty };
+            return next;
+          }
+          return [...prev, { productId, size, qty }];
+        });
+      },
+      removeFromCart: (productId, size) =>
+        setCart((prev) => prev.filter((p) => !(p.productId === productId && p.size === size))),
+      updateQty: (productId, size, qty) =>
+        setCart((prev) =>
+          prev.map((p) =>
+            p.productId === productId && p.size === size ? { ...p, qty: Math.max(1, qty) } : p,
+          ),
+        ),
+      clearCart: () => setCart([]),
+      toggleWishlist: (productId) =>
+        setWishlist((prev) =>
+          prev.includes(productId) ? prev.filter((x) => x !== productId) : [...prev, productId],
+        ),
+    };
+  }, [cart, wishlist]);
+
+  return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
+}
+
+export function useShop() {
+  const ctx = useContext(ShopContext);
+  if (!ctx) throw new Error("useShop must be used within ShopProvider");
+  return ctx;
+}
+
+export const formatPrice = (n: number) =>
+  new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
