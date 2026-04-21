@@ -2,7 +2,9 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 import appCss from "../styles.css?url";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ShopProvider } from "@/lib/store";
+import { ShopProvider, useShop } from "@/lib/store";
+import { CartDrawer } from "@/components/CartDrawer";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -89,7 +91,14 @@ function RootComponent() {
           <Outlet />
         </main>
         <Footer />
+        <GlobalCartDrawer />
+        <Toaster position="top-center" />
       </div>
     </ShopProvider>
   );
+}
+
+function GlobalCartDrawer() {
+  const { drawerOpen, closeDrawer, lastAdded } = useShop();
+  return <CartDrawer open={drawerOpen} onClose={closeDrawer} highlightId={lastAdded} />;
 }

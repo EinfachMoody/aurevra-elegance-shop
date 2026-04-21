@@ -18,6 +18,10 @@ type ShopState = {
   cartCount: number;
   cartTotal: number;
   cartDetailed: (CartItem & { product: Product })[];
+  drawerOpen: boolean;
+  lastAdded: string | null;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 };
 
 const ShopContext = createContext<ShopState | null>(null);
@@ -26,6 +30,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [lastAdded, setLastAdded] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -58,6 +64,13 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       cartDetailed,
       cartCount: cart.reduce((s, i) => s + i.qty, 0),
       cartTotal: cartDetailed.reduce((s, i) => s + i.product.price * i.qty, 0),
+      drawerOpen,
+      lastAdded,
+      openDrawer: () => setDrawerOpen(true),
+      closeDrawer: () => {
+        setDrawerOpen(false);
+        setTimeout(() => setLastAdded(null), 300);
+      },
       addToCart: (productId, size, qty = 1) => {
         setCart((prev) => {
           const idx = prev.findIndex((p) => p.productId === productId && p.size === size);
@@ -68,6 +81,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
           }
           return [...prev, { productId, size, qty }];
         });
+        setLastAdded(productId);
+        setDrawerOpen(true);
       },
       removeFromCart: (productId, size) =>
         setCart((prev) => prev.filter((p) => !(p.productId === productId && p.size === size))),
@@ -83,7 +98,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
           prev.includes(productId) ? prev.filter((x) => x !== productId) : [...prev, productId],
         ),
     };
-  }, [cart, wishlist]);
+  }, [cart, wishlist, drawerOpen, lastAdded]);
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 }
