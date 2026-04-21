@@ -44,6 +44,12 @@ export const Route = createRootRoute({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "AUREVRA — Defined by Elegance" },
+      { name: "description", content: "A modern, luxurious online fashion shop template for the AUREVRA brand." },
+      { property: "og:description", content: "A modern, luxurious online fashion shop template for the AUREVRA brand." },
+      { name: "twitter:description", content: "A modern, luxurious online fashion shop template for the AUREVRA brand." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/U1rqOiAybPbX8Vt8G9h72GGtV6w1/social-images/social-1776791762882-99e4a614-2f5a-4a1a-9c27-0360a5a32f45.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/U1rqOiAybPbX8Vt8G9h72GGtV6w1/social-images/social-1776791762882-99e4a614-2f5a-4a1a-9c27-0360a5a32f45.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
