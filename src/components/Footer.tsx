@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram } from "lucide-react";
-import { LogoWordmark } from "./Logo";
+import { Instagram, Mail } from "lucide-react";
+import { LogoMark, LogoWordmark } from "./Logo";
 
 function TikTokIcon({ className = "" }: { className?: string }) {
   return (
@@ -19,73 +19,80 @@ function SnapIcon({ className = "" }: { className?: string }) {
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background mt-24">
-      <div className="overflow-hidden border-b border-border py-8">
-        <div className="marquee-track flex whitespace-nowrap serif text-[14vw] leading-none text-foreground/95">
+    <footer className="mt-24 border-t border-border bg-background">
+      <div className="overflow-hidden border-b border-border py-6">
+        <div className="marquee-track flex whitespace-nowrap serif text-[12vw] leading-none text-foreground/95">
           <span className="px-8">AUREVRA · Defined by Elegance ·</span>
           <span className="px-8">AUREVRA · Defined by Elegance ·</span>
           <span className="px-8">AUREVRA · Defined by Elegance ·</span>
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-[1400px] gap-12 px-6 py-16 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-[1400px] gap-12 px-6 py-16 lg:grid-cols-4 lg:px-8">
         <div className="lg:col-span-1">
-          <LogoWordmark className="text-xl" />
-          <p className="mt-6 text-sm leading-relaxed text-muted-foreground max-w-xs">
-            A modern house defined by identity, ambition and timeless design.
+          <div className="flex items-center gap-2">
+            <LogoMark className="h-7 w-7" />
+            <LogoWordmark className="text-lg" />
+          </div>
+          <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
+            Ein modernes Maison — definiert durch Identität, Anspruch und zeitloses Design.
           </p>
-          <div className="mt-6 flex items-center gap-3 text-foreground/70">
-            <a href="#" aria-label="Instagram" className="rounded-full border border-border p-2.5 hover:border-gold hover:text-gold transition">
+          <div className="mt-6 flex items-center gap-2 text-foreground/70">
+            <a href="#" aria-label="Instagram" className="rounded-full border border-border p-2.5 transition hover:border-gold hover:text-gold">
               <Instagram className="h-4 w-4" />
             </a>
-            <a href="#" aria-label="TikTok" className="rounded-full border border-border p-2.5 hover:border-gold hover:text-gold transition">
+            <a href="#" aria-label="TikTok" className="rounded-full border border-border p-2.5 transition hover:border-gold hover:text-gold">
               <TikTokIcon className="h-4 w-4" />
             </a>
-            <a href="#" aria-label="Snapchat" className="rounded-full border border-border p-2.5 hover:border-gold hover:text-gold transition">
+            <a href="#" aria-label="Snapchat" className="rounded-full border border-border p-2.5 transition hover:border-gold hover:text-gold">
               <SnapIcon className="h-4 w-4" />
             </a>
           </div>
         </div>
 
         <div>
-          <h4 className="text-[11px] uppercase tracking-luxe text-muted-foreground">House</h4>
+          <h4 className="text-[11px] uppercase tracking-luxe text-muted-foreground">Maison</h4>
           <ul className="mt-5 space-y-3 text-sm">
-            <li><Link to="/about" className="hover:text-gold">Our Story</Link></li>
-            <li><Link to="/shop" className="hover:text-gold">Collection</Link></li>
-            <li><Link to="/contact" className="hover:text-gold">Contact</Link></li>
+            <li><Link to="/about" className="hover:text-gold">Unsere Story</Link></li>
+            <li><Link to="/shop" className="hover:text-gold">Kollektion</Link></li>
+            <li><Link to="/contact" className="hover:text-gold">Kontakt</Link></li>
+            <li><Link to="/wishlist" className="hover:text-gold">Wunschliste</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-[11px] uppercase tracking-luxe text-muted-foreground">Care</h4>
+          <h4 className="text-[11px] uppercase tracking-luxe text-muted-foreground">Service</h4>
           <ul className="mt-5 space-y-3 text-sm">
-            <li><Link to="/legal/privacy" className="hover:text-gold">Privacy Policy</Link></li>
-            <li><Link to="/legal/terms" className="hover:text-gold">Terms of Service</Link></li>
-            <li><Link to="/legal/imprint" className="hover:text-gold">Imprint</Link></li>
+            <li><Link to="/legal/privacy" className="hover:text-gold">Datenschutz</Link></li>
+            <li><Link to="/legal/terms" className="hover:text-gold">AGB</Link></li>
+            <li><Link to="/legal/imprint" className="hover:text-gold">Impressum</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-[11px] uppercase tracking-luxe text-muted-foreground">Newsletter</h4>
           <p className="mt-5 text-sm text-muted-foreground">
-            Receive private invitations and seasonal previews.
+            Erhalte private Einladungen und Vorpremieren neuer Kollektionen.
           </p>
-          <form className="mt-4 flex border-b border-foreground" onSubmit={(e) => e.preventDefault()}>
+          <form className="mt-4 flex items-center gap-2 rounded-full border border-border bg-card p-1.5 pl-4" onSubmit={(e) => e.preventDefault()}>
+            <Mail className="h-4 w-4 text-muted-foreground" />
             <input
               type="email"
               required
-              placeholder="Your email"
-              className="flex-1 bg-transparent py-2 text-sm outline-none placeholder:text-muted-foreground"
+              placeholder="Deine E-Mail"
+              className="flex-1 bg-transparent py-1.5 text-sm outline-none placeholder:text-muted-foreground"
             />
-            <button className="text-[11px] uppercase tracking-luxe hover:text-gold">Join</button>
+            <button className="rounded-full bg-foreground px-4 py-2 text-[11px] uppercase tracking-wider-luxe text-background hover:bg-gold hover:text-gold-foreground transition">
+              Beitreten
+            </button>
           </form>
         </div>
       </div>
 
       <div className="border-t border-border">
-        <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-3 px-6 py-6 text-[11px] uppercase tracking-wider-luxe text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} AUREVRA Maison. All rights reserved.</p>
-          <p>Crafted in Europe</p>
+        <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-3 px-6 py-6 text-[11px] uppercase tracking-wider-luxe text-muted-foreground sm:flex-row lg:px-8">
+          <p>© {new Date().getFullYear()} AUREVRA Maison. Alle Rechte vorbehalten.</p>
+          <p>Hergestellt in Europa</p>
         </div>
       </div>
     </footer>
