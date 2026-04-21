@@ -4,6 +4,7 @@ import { Heart, Minus, Plus, Truck, RefreshCw, Sparkles, ChevronRight } from "lu
 import { getProduct, products } from "@/lib/products";
 import { formatPrice, useShop } from "@/lib/store";
 import { ProductCard } from "@/components/ProductCard";
+import { WalletButtons } from "@/components/WalletButtons";
 
 export const Route = createFileRoute("/product/$id")({
   loader: ({ params }) => {
@@ -135,16 +136,20 @@ function ProductPage() {
             >
               {size ? "In den Warenkorb" : "Größe wählen"}
             </button>
-            <button
-              disabled={!size}
-              onClick={() => handleAdd(true)}
-              className="flex items-center justify-center gap-2 rounded-full border border-foreground bg-background py-4 text-[12px] uppercase tracking-wider-luxe transition hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
-            >
-               Mit Apple Pay zahlen
-            </button>
+
+            <div className="relative my-1 flex items-center">
+              <div className="h-px flex-1 bg-border" />
+              <span className="px-3 text-[10px] uppercase tracking-wider-luxe text-muted-foreground">
+                Express-Checkout
+              </span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            <WalletButtons variant="row" />
+
             <button
               onClick={() => toggleWishlist(product.id)}
-              className="mt-1 flex items-center justify-center gap-2 text-[11px] uppercase tracking-wider-luxe text-muted-foreground hover:text-foreground"
+              className="mt-3 flex items-center justify-center gap-2 text-[11px] uppercase tracking-wider-luxe text-muted-foreground hover:text-foreground"
             >
               <Heart className={`h-4 w-4 ${liked ? "fill-foreground text-foreground" : ""}`} />
               {liked ? "Auf Wunschliste" : "Zur Wunschliste"}

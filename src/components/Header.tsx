@@ -14,7 +14,7 @@ const nav = [
 ];
 
 export function Header() {
-  const { cartCount, wishlist } = useShop();
+  const { cartCount, wishlist, openDrawer } = useShop();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -76,14 +76,19 @@ export function Header() {
                 <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-gold" />
               )}
             </Link>
-            <Link to="/cart" aria-label="Warenkorb" className="relative rounded-full p-2.5 transition hover:bg-muted">
+            <button
+              type="button"
+              onClick={openDrawer}
+              aria-label="Warenkorb öffnen"
+              className="relative rounded-full p-2.5 transition hover:bg-muted"
+            >
               <ShoppingBag className="h-[18px] w-[18px]" />
               {cartCount > 0 && (
                 <span className="absolute -right-0.5 top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-foreground px-1 text-[10px] font-medium text-background">
                   {cartCount}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
       </header>
