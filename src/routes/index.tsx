@@ -4,7 +4,7 @@ import story from "@/assets/story-fabric.jpg";
 import { LogoMark, LogoWordmark } from "@/components/Logo";
 import { ProductCard } from "@/components/ProductCard";
 import { products } from "@/lib/products";
-import { Instagram } from "lucide-react";
+import { ArrowRight, Instagram, Sparkles, Truck, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -13,12 +13,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "AUREVRA. A brand built on identity, ambition and timeless design. Discover the new collection.",
+          "AUREVRA. Eine Marke, gegründet auf Identität, Anspruch und zeitlosem Design. Entdecke die neue Kollektion.",
       },
       { property: "og:title", content: "AUREVRA — Defined by Elegance" },
       {
         property: "og:description",
-        content: "A brand built on identity, ambition and timeless design.",
+        content: "Eine Marke, gegründet auf Identität, Anspruch und zeitlosem Design.",
       },
     ],
   }),
@@ -33,51 +33,53 @@ function HomePage() {
       <section className="relative h-[92vh] min-h-[640px] w-full overflow-hidden bg-foreground text-background">
         <img
           src={hero}
-          alt="AUREVRA campaign"
+          alt="AUREVRA Kampagne"
           width={1920}
           height={1080}
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className="absolute inset-0 h-full w-full object-cover opacity-75"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-foreground/10 to-foreground/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/30 via-foreground/10 to-foreground/80" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center animate-fade-in">
-          <LogoMark className="h-16 w-16 lg:h-24 lg:w-24 invert opacity-95 animate-fade-up" />
-          <LogoWordmark className="mt-6 text-2xl lg:text-4xl text-background animate-fade-up" />
-          <h1 className="mt-10 max-w-3xl text-balance serif text-4xl leading-[1.05] text-background sm:text-5xl lg:text-7xl animate-fade-up" style={{ animationDelay: "120ms" }}>
-            Defined by Elegance
+          <LogoMark className="h-14 w-14 lg:h-20 lg:w-20 invert opacity-95 animate-fade-up" />
+          <LogoWordmark className="mt-5 text-xl lg:text-3xl text-background animate-fade-up" />
+          <h1 className="mt-8 max-w-3xl text-balance serif text-5xl leading-[1.02] text-background sm:text-6xl lg:text-8xl animate-fade-up" style={{ animationDelay: "120ms" }}>
+            Defined by<br /><span className="italic text-gold">Elegance</span>
           </h1>
-          <p className="mt-6 max-w-xl text-sm leading-relaxed text-background/80 sm:text-base animate-fade-up" style={{ animationDelay: "220ms" }}>
-            A brand built on identity, ambition and timeless design.
+          <p className="mt-7 max-w-md text-[15px] leading-relaxed text-background/80 animate-fade-up" style={{ animationDelay: "220ms" }}>
+            Eine Marke, gegründet auf Identität, Anspruch und zeitlosem Design.
           </p>
           <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row animate-fade-up" style={{ animationDelay: "320ms" }}>
             <Link
               to="/shop"
-              className="inline-flex min-w-[200px] items-center justify-center bg-background px-8 py-4 text-[11px] uppercase tracking-luxe text-foreground transition hover:bg-gold hover:text-gold-foreground"
+              className="group inline-flex min-w-[220px] items-center justify-center gap-2 rounded-full bg-background px-8 py-4 text-[12px] uppercase tracking-wider-luxe text-foreground transition hover:bg-gold hover:text-gold-foreground"
             >
-              Shop Now
+              Jetzt shoppen
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </Link>
             <Link
               to="/shop"
-              className="inline-flex min-w-[200px] items-center justify-center border border-background/70 px-8 py-4 text-[11px] uppercase tracking-luxe text-background transition hover:border-gold hover:text-gold"
+              className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-background/60 px-8 py-4 text-[12px] uppercase tracking-wider-luxe text-background backdrop-blur-sm transition hover:border-gold hover:text-gold"
             >
-              Explore Collection
+              Kollektion entdecken
             </Link>
           </div>
         </div>
-        <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] uppercase tracking-luxe text-background/60">
+        <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] uppercase tracking-wider-luxe text-background/60">
           AW · Capsule One
         </div>
       </section>
 
       {/* MARQUEE / META */}
-      <section className="border-y border-border">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-px bg-border md:grid-cols-4">
+      <section className="border-y border-border bg-background">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-px md:grid-cols-4">
           {[
-            "Atelier Quality",
-            "Crafted in Europe",
-            "Complimentary Shipping",
-            "Private Concierge",
-          ].map((t) => (
-            <div key={t} className="bg-background py-6 text-center text-[11px] uppercase tracking-luxe text-muted-foreground">
+            { i: Sparkles, t: "Atelier-Qualität" },
+            { i: Truck, t: "Kostenloser Versand" },
+            { i: Shield, t: "30 Tage Rückgabe" },
+            { i: LogoMark, t: "Hergestellt in Europa" },
+          ].map(({ i: Icon, t }) => (
+            <div key={t} className="flex items-center justify-center gap-2.5 py-5 text-[12px] tracking-wide text-muted-foreground">
+              <Icon className="h-4 w-4 text-gold" />
               {t}
             </div>
           ))}
@@ -85,30 +87,35 @@ function HomePage() {
       </section>
 
       {/* FEATURED */}
-      <section className="mx-auto max-w-[1400px] px-6 py-24 lg:py-32">
-        <div className="mb-14 flex items-end justify-between gap-6">
+      <section className="mx-auto max-w-[1400px] px-6 py-20 lg:px-8 lg:py-28">
+        <div className="mb-12 flex items-end justify-between gap-6">
           <div>
-            <p className="text-[11px] uppercase tracking-luxe text-muted-foreground">The Edit</p>
-            <h2 className="mt-3 serif text-4xl lg:text-5xl">Featured Pieces</h2>
+            <p className="text-[11px] uppercase tracking-wider-luxe text-gold">The Edit</p>
+            <h2 className="mt-3 serif text-4xl lg:text-6xl">Featured Pieces</h2>
           </div>
-          <Link to="/shop" className="hidden text-[11px] uppercase tracking-luxe text-foreground hover:text-gold sm:inline-block">
-            View All →
+          <Link to="/shop" className="hidden items-center gap-2 text-[12px] uppercase tracking-wider-luxe text-foreground hover:text-gold sm:inline-flex">
+            Alle ansehen <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-4">
           {featured.map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
           ))}
+        </div>
+        <div className="mt-12 text-center sm:hidden">
+          <Link to="/shop" className="inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-3.5 text-[11px] uppercase tracking-wider-luxe text-background">
+            Alle ansehen <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
       {/* BRAND STORY */}
       <section className="bg-secondary">
-        <div className="mx-auto grid max-w-[1400px] gap-12 px-6 py-24 lg:grid-cols-2 lg:gap-20 lg:py-32">
-          <div className="aspect-[4/5] overflow-hidden bg-muted">
+        <div className="mx-auto grid max-w-[1400px] gap-12 px-6 py-20 lg:grid-cols-2 lg:gap-20 lg:px-8 lg:py-28">
+          <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted">
             <img
               src={story}
-              alt="AUREVRA fabric"
+              alt="AUREVRA Stoff"
               loading="lazy"
               width={1280}
               height={1600}
@@ -116,35 +123,39 @@ function HomePage() {
             />
           </div>
           <div className="flex flex-col justify-center">
-            <p className="text-[11px] uppercase tracking-luxe text-muted-foreground">Our Story</p>
-            <h2 className="mt-4 serif text-4xl leading-[1.1] lg:text-6xl">
-              More than clothing.<br />
-              <span className="text-gold italic">A presence.</span>
+            <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Unsere Story</p>
+            <h2 className="mt-4 serif text-4xl leading-[1.05] lg:text-6xl">
+              Mehr als Mode.<br />
+              <span className="italic text-gold">Eine Präsenz.</span>
             </h2>
             <div className="mt-8 max-w-md space-y-5 text-[15px] leading-relaxed text-muted-foreground">
               <p>
-                AUREVRA was built from vision, discipline and identity. What started as an idea
-                became a statement.
+                AUREVRA wurde aus Vision, Disziplin und Identität geboren. Was als Idee begann, wurde
+                zum Statement.
               </p>
               <p className="text-foreground">
-                This is more than clothing — this is presence.
+                Das ist mehr als Kleidung — das ist Präsenz.
               </p>
             </div>
             <Link
               to="/about"
-              className="mt-10 inline-flex w-fit items-center gap-3 border-b border-foreground pb-1 text-[11px] uppercase tracking-luxe hover:border-gold hover:text-gold"
+              className="group mt-10 inline-flex w-fit items-center gap-2 rounded-full border border-foreground bg-background px-6 py-3 text-[11px] uppercase tracking-wider-luxe transition hover:bg-foreground hover:text-background"
             >
-              Read the Manifesto →
+              Manifest lesen
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* SOCIAL */}
-      <section className="mx-auto max-w-[1400px] px-6 py-24 text-center">
-        <p className="text-[11px] uppercase tracking-luxe text-muted-foreground">Follow the House</p>
-        <h2 className="mt-3 serif text-4xl lg:text-5xl">@aurevra</h2>
-        <div className="mx-auto mt-10 flex w-fit items-center gap-4">
+      <section className="mx-auto max-w-[1400px] px-6 py-20 text-center lg:px-8">
+        <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Folge dem Maison</p>
+        <h2 className="mt-3 serif text-4xl lg:text-6xl">@aurevra</h2>
+        <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground">
+          Backstage-Eindrücke, Kampagnen und neue Drops.
+        </p>
+        <div className="mx-auto mt-8 flex w-fit items-center gap-3">
           <a href="#" aria-label="Instagram" className="rounded-full border border-border p-4 transition hover:border-gold hover:text-gold">
             <Instagram className="h-5 w-5" />
           </a>

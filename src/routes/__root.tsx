@@ -9,16 +9,16 @@ function NotFoundComponent() {
     <div className="flex min-h-[70vh] items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="serif text-7xl text-foreground">404</h1>
-        <h2 className="mt-4 text-sm uppercase tracking-luxe text-muted-foreground">Page not found</h2>
+        <h2 className="mt-4 text-sm uppercase tracking-wider-luxe text-muted-foreground">Seite nicht gefunden</h2>
         <p className="mt-4 text-sm text-muted-foreground">
-          The page you are looking for has moved or no longer exists.
+          Die gesuchte Seite wurde verschoben oder existiert nicht mehr.
         </p>
         <div className="mt-8">
           <Link
             to="/"
-            className="inline-flex items-center justify-center bg-foreground px-8 py-3 text-[11px] uppercase tracking-luxe text-background transition hover:bg-foreground/85"
+            className="inline-flex items-center justify-center rounded-full bg-foreground px-8 py-3 text-[12px] uppercase tracking-wider-luxe text-background transition hover:bg-foreground/85"
           >
-            Return to AUREVRA
+            Zurück zu AUREVRA
           </Link>
         </div>
       </div>
@@ -35,12 +35,12 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "AUREVRA. A modern luxury house defined by identity, ambition and timeless design. Explore the collection.",
+          "AUREVRA. Ein modernes Maison, definiert durch Identität, Anspruch und zeitloses Design. Entdecke die Kollektion.",
       },
       { property: "og:title", content: "AUREVRA — Defined by Elegance" },
       {
         property: "og:description",
-        content: "A modern luxury house. Discover ready-to-wear, outerwear and accessories.",
+        content: "Ein modernes Maison. Entdecke Ready-to-wear, Outerwear und Accessoires.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -62,7 +62,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="de">
       <head>
         <HeadContent />
       </head>
