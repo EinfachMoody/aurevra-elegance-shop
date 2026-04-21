@@ -25,7 +25,8 @@ function ImprintPage() {
           <h2 className="serif text-2xl text-foreground">Geschäftsführung</h2>
           <p className="mt-3">
             <strong className="text-foreground">Mahmoud Lays El-Lahib</strong> — CEO<br />
-            <strong className="text-foreground">Osama Al-Lahib</strong> — CEO
+            <strong className="text-foreground">Osama Al-Lahib</strong> — CEO<br />
+            <strong className="text-foreground">Mohammed El-Lahib</strong> — CEO
           </p>
         </section>
 
