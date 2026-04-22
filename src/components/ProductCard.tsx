@@ -2,6 +2,31 @@ import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { formatPrice, useShop } from "@/lib/store";
 import type { Product } from "@/lib/products";
+import { LogoMark, LogoWordmarkImage } from "./Logo";
+
+/** Dezente Logo-Watermark unten rechts auf dem Produktbild — strategisch nach Kollektion. */
+function LogoOverlay({ logo }: { logo: Product["logo"] }) {
+  if (!logo || logo === "none") return null;
+  if (logo === "wordmark") {
+    return (
+      <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex justify-center opacity-70 mix-blend-multiply">
+        <LogoWordmarkImage className="h-3" />
+      </div>
+    );
+  }
+  if (logo === "lockup") {
+    return (
+      <div className="pointer-events-none absolute bottom-3 right-3 opacity-80 mix-blend-multiply">
+        <LogoMark className="h-7 w-7" />
+      </div>
+    );
+  }
+  return (
+    <div className="pointer-events-none absolute bottom-3 right-3 opacity-75 mix-blend-multiply">
+      <LogoMark className="h-5 w-5" />
+    </div>
+  );
+}
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { wishlist, toggleWishlist } = useShop();
@@ -25,6 +50,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           height={1280}
           className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
         />
+        <LogoOverlay logo={product.logo} />
         {product.badge && (
           <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-wider-luxe text-foreground backdrop-blur">
             {product.badge}
@@ -59,6 +85,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           </Link>
           <p className="mt-1 text-[11px] uppercase tracking-wider-luxe text-muted-foreground">
             {product.category}
+            {product.fit && <> · {product.fit}</>}
           </p>
         </div>
         <p className="text-sm tabular-nums text-foreground">{formatPrice(product.price)}</p>

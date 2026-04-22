@@ -4,7 +4,7 @@ import { SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import { products } from "@/lib/products";
 
-const categories = ["Alle", "Outerwear", "Oberteile", "Hosen", "Accessoires"] as const;
+const categories = ["Alle", "Outerwear", "T-Shirts", "Hoodies", "Oberteile", "Hosen", "Accessoires"] as const;
 const sizes = ["XS", "S", "M", "L", "XL"] as const;
 const sorts = [
   { v: "featured", l: "Empfohlen" },
