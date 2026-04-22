@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { products, type Product } from "./products";
+import { findCoupon, type Coupon } from "./coupons";
 
 export type CartItem = {
   productId: string;
@@ -22,6 +23,10 @@ type ShopState = {
   lastAdded: string | null;
   openDrawer: () => void;
   closeDrawer: () => void;
+  coupon: Coupon | null;
+  discount: number;
+  applyCoupon: (code: string) => { ok: boolean; message: string };
+  removeCoupon: () => void;
 };
 
 const ShopContext = createContext<ShopState | null>(null);
@@ -32,13 +37,19 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [lastAdded, setLastAdded] = useState<string | null>(null);
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
 
   useEffect(() => {
     try {
       const c = localStorage.getItem("aurevra:cart");
       const w = localStorage.getItem("aurevra:wishlist");
+      const k = localStorage.getItem("aurevra:coupon");
       if (c) setCart(JSON.parse(c));
       if (w) setWishlist(JSON.parse(w));
+      if (k) {
+        const found = findCoupon(k);
+        if (found) setCoupon(found);
+      }
     } catch {}
     setHydrated(true);
   }, []);
@@ -49,6 +60,11 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (hydrated) localStorage.setItem("aurevra:wishlist", JSON.stringify(wishlist));
   }, [wishlist, hydrated]);
+  useEffect(() => {
+    if (!hydrated) return;
+    if (coupon) localStorage.setItem("aurevra:coupon", coupon.code);
+    else localStorage.removeItem("aurevra:coupon");
+  }, [coupon, hydrated]);
 
   const value = useMemo<ShopState>(() => {
     const cartDetailed = cart
@@ -58,12 +74,24 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       })
       .filter(Boolean) as (CartItem & { product: Product })[];
 
+    const cartTotal = cartDetailed.reduce((s, i) => s + i.product.price * i.qty, 0);
+    const discount = coupon ? Math.round(cartTotal * (coupon.percent / 100)) : 0;
+
     return {
       cart,
       wishlist,
       cartDetailed,
       cartCount: cart.reduce((s, i) => s + i.qty, 0),
-      cartTotal: cartDetailed.reduce((s, i) => s + i.product.price * i.qty, 0),
+      cartTotal,
+      coupon,
+      discount,
+      applyCoupon: (code: string) => {
+        const found = findCoupon(code);
+        if (!found) return { ok: false, message: "Ungültiger Gutscheincode." };
+        setCoupon(found);
+        return { ok: true, message: `${found.label} angewendet.` };
+      },
+      removeCoupon: () => setCoupon(null),
       drawerOpen,
       lastAdded,
       openDrawer: () => setDrawerOpen(true),
