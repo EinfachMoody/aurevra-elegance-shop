@@ -218,17 +218,6 @@ function CheckoutPage() {
                 </li>
               ))}
             </ul>
-            <div className="mt-6 space-y-2 border-t border-border pt-6 text-sm">
-              <Row label="Zwischensumme" value={formatPrice(cartTotal)} />
-              <Row label="Versand" value={shipping === 0 ? "Kostenlos" : formatPrice(shipping)} />
-              <Row label="Inkl. MwSt. (19%)" value={formatPrice(tax)} muted />
-              <div className="my-3 border-t border-border" />
-              <div className="flex items-baseline justify-between">
-                <span className="serif text-lg">Gesamt</span>
-                <span className="serif text-2xl tabular-nums">{formatPrice(total)}</span>
-              </div>
-            </div>
-          </div>
 
             <div className="mt-6 space-y-2 border-t border-border pt-6 text-sm">
               <Row label="Zwischensumme" value={formatPrice(cartTotal)} />
