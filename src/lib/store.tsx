@@ -126,7 +126,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
           prev.includes(productId) ? prev.filter((x) => x !== productId) : [...prev, productId],
         ),
     };
-  }, [cart, wishlist, drawerOpen, lastAdded]);
+  }, [cart, wishlist, drawerOpen, lastAdded, coupon]);
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 }
