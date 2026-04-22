@@ -309,11 +309,6 @@ function CheckoutPage() {
               </ul>
             )}
           </div>
-              >
-                Anwenden
-              </button>
-            </div>
-          </div>
         </aside>
       </form>
     </div>
