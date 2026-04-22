@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import hero from "@/assets/hero-campaign.jpg";
 import story from "@/assets/story-fabric.jpg";
-import { LogoMark, LogoWordmark } from "@/components/Logo";
+import { LogoMark, LogoWordmark, LogoWordmarkImage, LogoLockup } from "@/components/Logo";
 import { ProductCard } from "@/components/ProductCard";
-import { products } from "@/lib/products";
+import { getBestsellers, getNewDrops } from "@/lib/products";
+import { collections } from "@/lib/collections";
 import { ArrowRight, Instagram, Sparkles, Truck, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -13,12 +14,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "AUREVRA. Eine Marke, gegründet auf Identität, Anspruch und zeitlosem Design. Entdecke die neue Kollektion.",
+          "AUREVRA. Ein modernes Maison, gegründet auf Identität, Anspruch und zeitlosem Design. Entdecke die neuen Kollektionen Noir Essence, VÉRITÉ Printemps und Élan Automne.",
       },
       { property: "og:title", content: "AUREVRA — Defined by Elegance" },
       {
         property: "og:description",
-        content: "Eine Marke, gegründet auf Identität, Anspruch und zeitlosem Design.",
+        content: "Ein modernes Maison. Drei Kollektionen, eine Identität.",
       },
     ],
   }),
@@ -26,11 +27,14 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const featured = products.slice(0, 8);
+  const bestsellers = getBestsellers().slice(0, 8);
+  const newDrops = getNewDrops().slice(0, 4);
+  const featuredCollection = collections[0]; // Noir Essence — gross spotlighten
+
   return (
     <div>
       {/* HERO */}
-      <section className="relative h-[92vh] min-h-[640px] w-full overflow-hidden bg-foreground text-background">
+      <section className="relative h-[94vh] min-h-[640px] w-full overflow-hidden bg-foreground text-background">
         <img
           src={hero}
           alt="AUREVRA Kampagne"
@@ -38,15 +42,14 @@ function HomePage() {
           height={1080}
           className="absolute inset-0 h-full w-full object-cover opacity-75"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/30 via-foreground/10 to-foreground/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/40 via-foreground/10 to-foreground/85" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center animate-fade-in">
-          <LogoMark className="h-14 w-14 lg:h-20 lg:w-20 invert opacity-95 animate-fade-up" />
-          <LogoWordmark className="mt-5 text-xl lg:text-3xl text-background animate-fade-up" />
-          <h1 className="mt-8 max-w-3xl text-balance serif text-5xl leading-[1.02] text-background sm:text-6xl lg:text-8xl animate-fade-up" style={{ animationDelay: "120ms" }}>
+          <LogoLockup className="h-28 lg:h-40 animate-fade-up" invert />
+          <h1 className="mt-6 max-w-3xl text-balance serif text-5xl leading-[1.02] text-background sm:text-6xl lg:text-8xl animate-fade-up" style={{ animationDelay: "120ms" }}>
             Defined by<br /><span className="italic text-gold">Elegance</span>
           </h1>
-          <p className="mt-7 max-w-md text-[15px] leading-relaxed text-background/80 animate-fade-up" style={{ animationDelay: "220ms" }}>
-            Eine Marke, gegründet auf Identität, Anspruch und zeitlosem Design.
+          <p className="mt-7 max-w-md text-[15px] leading-relaxed text-background/85 animate-fade-up" style={{ animationDelay: "220ms" }}>
+            Ein modernes Maison. Drei Kollektionen. Eine Identität.
           </p>
           <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row animate-fade-up" style={{ animationDelay: "320ms" }}>
             <Link
@@ -57,21 +60,22 @@ function HomePage() {
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </Link>
             <Link
-              to="/shop"
+              to="/collection/$slug"
+              params={{ slug: "noir-essence" }}
               className="inline-flex min-w-[220px] items-center justify-center rounded-full border border-background/60 px-8 py-4 text-[12px] uppercase tracking-wider-luxe text-background backdrop-blur-sm transition hover:border-gold hover:text-gold"
             >
-              Kollektion entdecken
+              Noir Essence entdecken
             </Link>
           </div>
         </div>
         <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] uppercase tracking-wider-luxe text-background/60">
-          AW · Capsule One
+          AW · Capsule One · Édition Limitée
         </div>
       </section>
 
       {/* MARQUEE / META */}
       <section className="border-y border-border bg-background">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-px md:grid-cols-4">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-px md:grid-cols-4">
           {[
             { i: Sparkles, t: "Atelier-Qualität" },
             { i: Truck, t: "Kostenloser Versand" },
@@ -86,19 +90,118 @@ function HomePage() {
         </div>
       </section>
 
-      {/* FEATURED */}
-      <section className="mx-auto max-w-[1400px] px-6 py-20 lg:px-8 lg:py-28">
+      {/* FEATURED COLLECTIONS */}
+      <section className="mx-auto max-w-[1500px] px-6 py-20 lg:px-10 lg:py-28">
         <div className="mb-12 flex items-end justify-between gap-6">
           <div>
-            <p className="text-[11px] uppercase tracking-wider-luxe text-gold">The Edit</p>
-            <h2 className="mt-3 serif text-4xl lg:text-6xl">Featured Pieces</h2>
+            <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Maison · Drei Kapitel</p>
+            <h2 className="mt-3 serif text-4xl lg:text-6xl">Kollektionen</h2>
+          </div>
+          <Link to="/shop" className="hidden items-center gap-2 text-[12px] uppercase tracking-wider-luxe text-foreground hover:text-gold sm:inline-flex">
+            Alle ansehen <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-3 lg:gap-6">
+          {collections.map((c, i) => (
+            <Link
+              key={c.id}
+              to="/collection/$slug"
+              params={{ slug: c.slug }}
+              className="group relative block overflow-hidden rounded-2xl bg-foreground animate-fade-up"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <div className="aspect-[3/4] overflow-hidden">
+                <img
+                  src={c.hero}
+                  alt={c.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover opacity-90 transition-transform duration-[1400ms] group-hover:scale-[1.04]"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/15 to-transparent" />
+              <div className="absolute inset-x-0 top-0 flex justify-center pt-6 opacity-90 mix-blend-screen">
+                {c.logoVariant === "monogram" && <LogoMark className="h-7 w-7" invert />}
+                {c.logoVariant === "wordmark" && <LogoWordmarkImage className="h-4" invert />}
+                {c.logoVariant === "lockup" && <LogoMark className="h-8 w-8" invert />}
+              </div>
+              <div className="absolute inset-x-0 bottom-0 p-7 text-background">
+                <p className="text-[10px] uppercase tracking-wider-luxe text-background/70">{c.subtitle}</p>
+                <h3 className="mt-2 serif text-3xl leading-tight lg:text-4xl">{c.name}</h3>
+                <p className="mt-2 text-sm italic text-background/85">{c.tagline}</p>
+                <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-wider-luxe">
+                  Entdecken <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* NEW DROP — featured banner */}
+      <section className="relative overflow-hidden bg-foreground text-background">
+        <div className="mx-auto grid max-w-[1500px] gap-10 px-6 py-20 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:py-28">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted">
+            <img
+              src={featuredCollection.hero}
+              alt={featuredCollection.name}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute left-5 top-5 rounded-full bg-gold px-4 py-1.5 text-[10px] uppercase tracking-wider-luxe text-gold-foreground">
+              New Drop
+            </div>
+          </div>
+          <div className="flex flex-col justify-center">
+            <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Spotlight · {featuredCollection.subtitle}</p>
+            <h2 className="mt-4 serif text-4xl leading-[1.05] text-background lg:text-7xl">
+              {featuredCollection.name}
+            </h2>
+            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-background/80">
+              {featuredCollection.description}
+            </p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/collection/$slug"
+                params={{ slug: featuredCollection.slug }}
+                className="group inline-flex min-w-[220px] items-center justify-center gap-2 rounded-full bg-background px-8 py-4 text-[12px] uppercase tracking-wider-luxe text-foreground transition hover:bg-gold"
+              >
+                Kollektion öffnen <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </Link>
+            </div>
+
+            {/* New Drop product strip */}
+            <div className="mt-12 grid grid-cols-4 gap-3">
+              {newDrops.map((p) => (
+                <Link
+                  key={p.id}
+                  to="/product/$id"
+                  params={{ id: p.id }}
+                  className="group block overflow-hidden rounded-lg bg-background/10"
+                >
+                  <div className="aspect-square overflow-hidden">
+                    <img src={p.image} alt={p.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BESTSELLERS */}
+      <section className="mx-auto max-w-[1500px] px-6 py-20 lg:px-10 lg:py-28">
+        <div className="mb-12 flex items-end justify-between gap-6">
+          <div>
+            <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Most Loved</p>
+            <h2 className="mt-3 serif text-4xl lg:text-6xl">Bestsellers</h2>
           </div>
           <Link to="/shop" className="hidden items-center gap-2 text-[12px] uppercase tracking-wider-luxe text-foreground hover:text-gold sm:inline-flex">
             Alle ansehen <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-4">
-          {featured.map((p, i) => (
+          {bestsellers.map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
           ))}
         </div>
@@ -111,7 +214,7 @@ function HomePage() {
 
       {/* BRAND STORY */}
       <section className="bg-secondary">
-        <div className="mx-auto grid max-w-[1400px] gap-12 px-6 py-20 lg:grid-cols-2 lg:gap-20 lg:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-[1500px] gap-12 px-6 py-20 lg:grid-cols-2 lg:gap-20 lg:px-10 lg:py-28">
           <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted">
             <img
               src={story}
@@ -123,10 +226,11 @@ function HomePage() {
             />
           </div>
           <div className="flex flex-col justify-center">
+            <LogoWordmarkImage className="h-5 mb-6 opacity-90" />
             <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Unsere Story</p>
             <h2 className="mt-4 serif text-4xl leading-[1.05] lg:text-6xl">
               Mehr als Mode.<br />
-              <span className="italic text-gold">Eine Präsenz.</span>
+              <span className="italic text-gold">Eine Présence.</span>
             </h2>
             <div className="mt-8 max-w-md space-y-5 text-[15px] leading-relaxed text-muted-foreground">
               <p>
@@ -134,7 +238,7 @@ function HomePage() {
                 zum Statement.
               </p>
               <p className="text-foreground">
-                Das ist mehr als Kleidung — das ist Präsenz.
+                Das ist mehr als Kleidung — das ist Présence.
               </p>
             </div>
             <Link
@@ -148,9 +252,20 @@ function HomePage() {
         </div>
       </section>
 
+      {/* WORDMARK MARQUEE */}
+      <section className="overflow-hidden border-y border-border bg-background py-10">
+        <div className="flex items-center justify-center opacity-90">
+          <LogoWordmarkImage className="h-10 lg:h-16" />
+        </div>
+        <p className="mt-3 text-center text-[10px] uppercase tracking-luxe text-muted-foreground">
+          Maison · Édition Limitée · Atelier Vienne · Made in Europe
+        </p>
+      </section>
+
       {/* SOCIAL */}
-      <section className="mx-auto max-w-[1400px] px-6 py-20 text-center lg:px-8">
-        <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Folge dem Maison</p>
+      <section className="mx-auto max-w-[1500px] px-6 py-20 text-center lg:px-10">
+        <LogoWordmark className="text-xs text-muted-foreground" />
+        <p className="mt-6 text-[11px] uppercase tracking-wider-luxe text-gold">Folge dem Maison</p>
         <h2 className="mt-3 serif text-4xl lg:text-6xl">@aurevra</h2>
         <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground">
           Backstage-Eindrücke, Kampagnen und neue Drops.
