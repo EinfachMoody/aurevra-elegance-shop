@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { CheckCircle2, Lock, ShieldCheck, Truck } from "lucide-react";
+import { CheckCircle2, Lock, ShieldCheck, Truck, Tag, Check } from "lucide-react";
 import { formatPrice, useShop } from "@/lib/store";
+import { COUPONS } from "@/lib/coupons";
 import { WalletButtons } from "@/components/WalletButtons";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -14,12 +16,26 @@ export const Route = createFileRoute("/checkout")({
 type Pay = "card" | "paypal" | "klarna" | "sepa";
 
 function CheckoutPage() {
-  const { cartDetailed, cartTotal, clearCart } = useShop();
+  const { cartDetailed, cartTotal, clearCart, coupon, discount, applyCoupon, removeCoupon } = useShop();
   const [pay, setPay] = useState<Pay>("card");
   const [done, setDone] = useState(false);
+  const [code, setCode] = useState("");
+  const [showCodes, setShowCodes] = useState(false);
   const shipping = cartTotal > 250 ? 0 : 15;
-  const tax = Math.round((cartTotal + shipping) * 0.19);
-  const total = cartTotal + shipping;
+  const subtotalAfterDiscount = Math.max(0, cartTotal - discount);
+  const tax = Math.round((subtotalAfterDiscount + shipping) * 0.19);
+  const total = subtotalAfterDiscount + shipping;
+
+  const handleApply = (value: string) => {
+    const result = applyCoupon(value);
+    if (result.ok) {
+      toast.success(result.message);
+      setCode("");
+      setShowCodes(false);
+    } else {
+      toast.error(result.message);
+    }
+  };
 
   if (done) {
     return (
@@ -202,8 +218,15 @@ function CheckoutPage() {
                 </li>
               ))}
             </ul>
+
             <div className="mt-6 space-y-2 border-t border-border pt-6 text-sm">
               <Row label="Zwischensumme" value={formatPrice(cartTotal)} />
+              {coupon && (
+                <div className="flex justify-between text-gold">
+                  <span className="flex items-center gap-1.5"><Tag className="h-3.5 w-3.5" /> {coupon.code} (−{coupon.percent}%)</span>
+                  <span className="tabular-nums">−{formatPrice(discount)}</span>
+                </div>
+              )}
               <Row label="Versand" value={shipping === 0 ? "Kostenlos" : formatPrice(shipping)} />
               <Row label="Inkl. MwSt. (19%)" value={formatPrice(tax)} muted />
               <div className="my-3 border-t border-border" />
@@ -215,19 +238,65 @@ function CheckoutPage() {
           </div>
 
           <div className="mt-4 rounded-2xl border border-border bg-card p-5 text-sm">
-            <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Gutscheincode</p>
-            <div className="mt-3 flex gap-2">
-              <input
-                placeholder="Code eingeben"
-                className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-foreground"
-              />
+            <div className="flex items-center justify-between">
+              <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Gutscheincode</p>
               <button
                 type="button"
-                className="rounded-full border border-border px-5 text-[11px] uppercase tracking-wider-luxe hover:border-foreground"
+                onClick={() => setShowCodes((s) => !s)}
+                className="text-[10px] uppercase tracking-wider-luxe text-muted-foreground hover:text-foreground"
               >
-                Anwenden
+                {showCodes ? "Verbergen" : "Codes anzeigen"}
               </button>
             </div>
+            {coupon ? (
+              <div className="mt-3 flex items-center justify-between rounded-full border border-gold/40 bg-gold/5 px-4 py-2.5">
+                <span className="flex items-center gap-2 text-sm font-medium tracking-wide">
+                  <Check className="h-3.5 w-3.5 text-gold" /> {coupon.code} · −{coupon.percent}%
+                </span>
+                <button
+                  type="button"
+                  onClick={() => { removeCoupon(); toast.message("Gutschein entfernt"); }}
+                  className="text-[11px] uppercase tracking-wider-luxe text-muted-foreground hover:text-foreground"
+                >
+                  Entfernen
+                </button>
+              </div>
+            ) : (
+              <div className="mt-3 flex gap-2">
+                <input
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleApply(code); } }}
+                  placeholder="Code eingeben"
+                  className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm uppercase tracking-wider outline-none focus:border-foreground"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleApply(code)}
+                  className="rounded-full border border-border px-5 text-[11px] uppercase tracking-wider-luxe hover:border-foreground"
+                >
+                  Anwenden
+                </button>
+              </div>
+            )}
+            {showCodes && !coupon && (
+              <ul className="mt-4 grid gap-1.5">
+                {COUPONS.map((c) => (
+                  <li key={c.code}>
+                    <button
+                      type="button"
+                      onClick={() => handleApply(c.code)}
+                      className="flex w-full items-center justify-between rounded-lg border border-dashed border-border px-3 py-2 text-left text-xs hover:border-gold hover:bg-gold/5"
+                    >
+                      <span className="font-medium tracking-wider">{c.code}</span>
+                      <span className="text-[10px] uppercase tracking-wider-luxe text-muted-foreground">
+                        −{c.percent}%{c.note ? ` · ${c.note}` : ""}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </aside>
       </form>
