@@ -51,12 +51,14 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="text-[11px] uppercase tracking-luxe text-muted-foreground">Maison</h4>
+          <h4 className="text-[11px] uppercase tracking-luxe text-muted-foreground">Kollektionen</h4>
           <ul className="mt-5 space-y-3 text-sm">
-            <li><Link to="/about" className="hover:text-gold">Unsere Story</Link></li>
-            <li><Link to="/shop" className="hover:text-gold">Kollektion</Link></li>
+            <li><Link to="/collection/$slug" params={{ slug: "noir-essence" }} className="hover:text-gold">Noir Essence</Link></li>
+            <li><Link to="/collection/$slug" params={{ slug: "verite-printemps" }} className="hover:text-gold">VÉRITÉ Printemps</Link></li>
+            <li><Link to="/collection/$slug" params={{ slug: "elan-automne" }} className="hover:text-gold">Élan Automne</Link></li>
+            <li><Link to="/shop" className="hover:text-gold">Alle Pieces</Link></li>
+            <li><Link to="/about" className="hover:text-gold">Story</Link></li>
             <li><Link to="/contact" className="hover:text-gold">Kontakt</Link></li>
-            <li><Link to="/wishlist" className="hover:text-gold">Wunschliste</Link></li>
           </ul>
         </div>
 
