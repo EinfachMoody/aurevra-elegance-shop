@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Minus, Plus, X, ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import { Minus, Plus, X, ShoppingBag, Tag, Check } from "lucide-react";
 import { formatPrice, useShop } from "@/lib/store";
+import { COUPONS } from "@/lib/coupons";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -13,9 +16,22 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { cartDetailed, cartTotal, updateQty, removeFromCart } = useShop();
+  const { cartDetailed, cartTotal, updateQty, removeFromCart, coupon, discount, applyCoupon, removeCoupon } = useShop();
+  const [code, setCode] = useState("");
+  const [showCodes, setShowCodes] = useState(false);
   const shipping = cartTotal > 250 || cartTotal === 0 ? 0 : 15;
+  const finalTotal = Math.max(0, cartTotal - discount) + shipping;
 
+  const handleApply = (value: string) => {
+    const result = applyCoupon(value);
+    if (result.ok) {
+      toast.success(result.message);
+      setCode("");
+      setShowCodes(false);
+    } else {
+      toast.error(result.message);
+    }
+  };
   return (
     <div className="mx-auto max-w-[1200px] px-6 py-14 lg:py-20 lg:px-8">
       <div className="mb-10 text-center">
@@ -98,14 +114,85 @@ function CartPage() {
               <h2 className="serif text-2xl">Zusammenfassung</h2>
               <dl className="mt-6 space-y-3 text-sm">
                 <div className="flex justify-between"><dt className="text-muted-foreground">Zwischensumme</dt><dd className="tabular-nums">{formatPrice(cartTotal)}</dd></div>
+                {coupon && (
+                  <div className="flex justify-between text-gold">
+                    <dt className="flex items-center gap-1.5"><Tag className="h-3.5 w-3.5" /> {coupon.code} (−{coupon.percent}%)</dt>
+                    <dd className="tabular-nums">−{formatPrice(discount)}</dd>
+                  </div>
+                )}
                 <div className="flex justify-between"><dt className="text-muted-foreground">Versand</dt><dd className="tabular-nums">{shipping === 0 ? "Kostenlos" : formatPrice(shipping)}</dd></div>
                 <div className="flex justify-between"><dt className="text-muted-foreground">MwSt.</dt><dd className="text-muted-foreground">an der Kasse</dd></div>
               </dl>
               <div className="my-6 border-t border-border" />
               <div className="flex justify-between text-base">
                 <span className="serif text-xl">Gesamt</span>
-                <span className="tabular-nums">{formatPrice(cartTotal + shipping)}</span>
+                <span className="tabular-nums">{formatPrice(finalTotal)}</span>
               </div>
+
+              {/* Gutschein */}
+              <div className="mt-6 rounded-xl border border-border bg-background/50 p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-[11px] uppercase tracking-wider-luxe text-gold">Gutscheincode</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowCodes((s) => !s)}
+                    className="text-[10px] uppercase tracking-wider-luxe text-muted-foreground hover:text-foreground"
+                  >
+                    {showCodes ? "Verbergen" : "Codes anzeigen"}
+                  </button>
+                </div>
+                {coupon ? (
+                  <div className="mt-3 flex items-center justify-between rounded-full border border-gold/40 bg-gold/5 px-4 py-2.5 text-sm">
+                    <span className="flex items-center gap-2 font-medium tracking-wide">
+                      <Check className="h-3.5 w-3.5 text-gold" /> {coupon.code}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => { removeCoupon(); toast.message("Gutschein entfernt"); }}
+                      className="text-[11px] uppercase tracking-wider-luxe text-muted-foreground hover:text-foreground"
+                    >
+                      Entfernen
+                    </button>
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={(e) => { e.preventDefault(); handleApply(code); }}
+                    className="mt-3 flex gap-2"
+                  >
+                    <input
+                      value={code}
+                      onChange={(e) => setCode(e.target.value.toUpperCase())}
+                      placeholder="z. B. AUREVRA10"
+                      className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm uppercase tracking-wider outline-none focus:border-foreground"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-full border border-border px-5 text-[11px] uppercase tracking-wider-luxe hover:border-foreground"
+                    >
+                      Anwenden
+                    </button>
+                  </form>
+                )}
+                {showCodes && !coupon && (
+                  <ul className="mt-4 grid gap-1.5">
+                    {COUPONS.map((c) => (
+                      <li key={c.code}>
+                        <button
+                          type="button"
+                          onClick={() => handleApply(c.code)}
+                          className="flex w-full items-center justify-between rounded-lg border border-dashed border-border px-3 py-2 text-left text-xs hover:border-gold hover:bg-gold/5"
+                        >
+                          <span className="font-medium tracking-wider">{c.code}</span>
+                          <span className="text-[10px] uppercase tracking-wider-luxe text-muted-foreground">
+                            −{c.percent}%{c.note ? ` · ${c.note}` : ""}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
               <Link
                 to="/checkout"
                 className="mt-7 block rounded-full bg-foreground py-4 text-center text-[12px] uppercase tracking-wider-luxe text-background hover:bg-foreground/85"
